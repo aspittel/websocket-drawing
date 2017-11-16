@@ -36,7 +36,7 @@ class App extends Component {
     }
     this.setState({ spans })
 
-    socket.on('color change', (msg) => {
+    let colorChange = (msg) => {
       let newSpans = [...this.state.spans]
       newSpans[msg.id] = <Pixel
                             id={msg.id}
@@ -44,7 +44,13 @@ class App extends Component {
                             backgroundColor={msg.color}
                             handleClick={this.handlePixelClick}/>
       this.setState({ spans: newSpans })
+    }
+
+    socket.on('history', msgs => {
+      msgs.forEach(colorChange)
     })
+
+    socket.on('color change', colorChange)
   }
 
   getColor (color) {
